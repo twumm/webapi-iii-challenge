@@ -20,7 +20,6 @@ router.post('/', async (req, res, next) => {
 });
 
 router.post('/:id/posts', (req, res) => {
-
 });
 
 router.get('/', (req, res) => {
@@ -45,8 +44,15 @@ router.put('/:id', (req, res) => {
 
 //custom middleware
 
-function validateUserId(req, res, next) {
-
+async function validateUserId(req, res, next) {
+  const { id } = req.params;
+  const user = await userDb.getById(id);
+  if (user) {
+    req.user = user;
+    next();
+  } else {
+    res.status(400).json({ message: "Invalid user id" });
+  }
 };
 
 function validateUser(req, res, next) {
