@@ -46,8 +46,14 @@ router.get('/:id', validateUserId, async (req, res, next) => {
   }
 });
 
-router.get('/:id/posts', (req, res) => {
-
+router.get('/:id/posts', validateUserId, async (req, res, next) => {
+  try {
+    const posts = await postDb.getById(req.user.id);
+    res.status(200).json(posts);
+  }
+  catch (error) {
+    next(error);
+  }
 });
 
 router.delete('/:id', (req, res) => {
