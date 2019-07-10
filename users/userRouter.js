@@ -16,7 +16,7 @@ router.post('/', validateUser, async (req, res, next) => {
   }
 });
 
-router.post('/:id/posts', validateUserId, async (req, res, next) => {
+router.post('/:id/posts', [validateUserId, validatePost], async (req, res, next) => {
   const blogPost = { user_id: req.params.id, text: req.body.text }
   try {
     const post = await postDb.insert(blogPost);
@@ -71,7 +71,13 @@ function validateUser(req, res, next) {
 };
 
 function validatePost(req, res, next) {
-
+  if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+    res.status(400).json({ message: "Missing post data" });
+  } else if (!req.body.text) {
+    res.status(400).json({ message: "Missing required *text* field" });
+  } else {
+    next();
+  }
 };
 
 module.exports = router;
