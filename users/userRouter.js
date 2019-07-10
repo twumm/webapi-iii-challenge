@@ -56,8 +56,14 @@ router.get('/:id/posts', validateUserId, async (req, res, next) => {
   }
 });
 
-router.delete('/:id', (req, res) => {
-
+router.delete('/:id', validateUserId, async (req, res, next) => {
+  try {
+    const deleted = await userDb.remove(req.user.id);
+    res.status(200).json({ count: deleted, userDeleted: req.user });
+  }
+  catch (error) {
+    next(error);
+  }
 });
 
 router.put('/:id', (req, res) => {
