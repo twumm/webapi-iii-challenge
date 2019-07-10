@@ -1,9 +1,22 @@
-const express = 'express';
+const express = require('express');
 
 const router = express.Router();
+const userDb = require('./userDb');
 
-router.post('/', (req, res) => {
-
+router.post('/', async (req, res, next) => {
+  const user = { name }  = req.body;
+  try {
+    if (!user.name) {
+      res.status(400).json({ message: "Please provide a name for the user" })
+    } else {
+      const newUserId = await userDb.insert(user);
+      const newUser = await userDb.getById(newUserId.id);
+      res.status(200).json(newUser);
+    }
+  }
+  catch (error) {
+    next(error);
+  }
 });
 
 router.post('/:id/posts', (req, res) => {
