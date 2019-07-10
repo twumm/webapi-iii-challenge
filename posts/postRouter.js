@@ -13,7 +13,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:id', validatePostId, (req, res) => {
+router.get('/:id', validatePostId, (req, res, next) => {
   try {
     res.status(200).json(req.post);
   }
@@ -22,12 +22,18 @@ router.get('/:id', validatePostId, (req, res) => {
   }
 });
 
-router.delete('/:id', (req, res) => {
-
+router.delete('/:id', validatePostId, async (req, res, next) => {
+  try {
+    const deleteCount = await postDb.remove(req.post.id);
+    res.status(200).json({ count: deleteCount, deletedPost: req.post });
+  }
+  catch (error) {
+    next(error);
+  }
 });
 
 router.put('/:id', (req, res) => {
-
+  
 });
 
 // custom middleware
