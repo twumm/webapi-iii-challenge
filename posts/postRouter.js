@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const postDb = require('./postDb');
-// import { validatePost } from '../users/userRouter';
+const validatePost = require('../users/userRouter').validatePost;
 
 router.get('/', async (req, res, next) => {
   try {
@@ -33,7 +33,7 @@ router.delete('/:id', validatePostId, async (req, res, next) => {
   }
 });
 
-router.put('/:id', [validatePostId], async (req, res, next) => {
+router.put('/:id', [validatePostId, validatePost], async (req, res, next) => {
   const blogPost = { text: req.body.text };
   try {
     const updatedCount = await postDb.update(req.post.id, blogPost);
