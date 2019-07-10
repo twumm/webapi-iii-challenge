@@ -66,8 +66,20 @@ router.delete('/:id', validateUserId, async (req, res, next) => {
   }
 });
 
-router.put('/:id', (req, res) => {
-
+router.put('/:id', [validateUserId, validateUser], async (req, res, next) => {
+  const user = { name }  = req.body;
+  try {
+    const updatedCount = await userDb.update(req.user.id, user)
+    if (updatedCount < 1) {
+      res.status(500).json({ message: "The update failed for some reason. Please try again" });
+    } else {
+      const updatedUser = await userDb.getById(req.user.id);
+      res.status(200).json(updatedUser);
+    }
+  }
+  catch (error) {
+    next(error);
+  }
 });
 
 //custom middleware
