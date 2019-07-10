@@ -37,8 +37,13 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:id', (req, res) => {
-
+router.get('/:id', validateUserId, async (req, res, next) => {
+  try {
+    res.status(200).json(req.user)
+  }
+  catch (error) {
+    next(error);
+  }
 });
 
 router.get('/:id/posts', (req, res) => {
