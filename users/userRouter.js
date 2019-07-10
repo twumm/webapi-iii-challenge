@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const userDb = require('./userDb');
+const postDb = require('../posts/postDb');
 
 router.post('/', async (req, res, next) => {
   const user = { name }  = req.body;
@@ -19,7 +20,15 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts', validateUserId, async (req, res, next) => {
+  const blogPost = { user_id: req.params.id, text: req.body.text }
+  try {
+    const post = await postDb.insert(blogPost);
+    res.status(201).json(post);
+  }
+  catch(error) {
+    next(error);
+  }
 });
 
 router.get('/', (req, res) => {
