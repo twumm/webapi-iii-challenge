@@ -24,4 +24,6 @@ function errorHandler(error, req, res, next) {
   res.status(500).json({ message: "There was an error" })
 }
 
+server.use(errorHandler);
+
 module.exports = server;
