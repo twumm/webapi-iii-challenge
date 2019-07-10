@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const postDb = require('./postDb');
+// import { validatePost } from '../users/userRouter';
 
 router.get('/', async (req, res, next) => {
   try {
@@ -32,8 +33,16 @@ router.delete('/:id', validatePostId, async (req, res, next) => {
   }
 });
 
-router.put('/:id', (req, res) => {
-  
+router.put('/:id', [validatePostId], async (req, res, next) => {
+  const blogPost = { text: req.body.text };
+  try {
+    const updatedCount = await postDb.update(req.post.id, blogPost);
+    const updatedPost = await postDb.getById(req.post.id);
+    res.status(200).json({ count: updatedCount, updatedPost });
+  }
+  catch (error) {
+    next(error);
+  }
 });
 
 // custom middleware
