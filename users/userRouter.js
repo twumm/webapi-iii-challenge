@@ -27,8 +27,14 @@ router.post('/:id/posts', [validateUserId, validatePost], async (req, res, next)
   }
 });
 
-router.get('/', (req, res) => {
-
+router.get('/', async (req, res, next) => {
+  try {
+    const users = await userDb.get();
+    res.status(200).json(users);
+  }
+  catch (error) {
+    next(error);
+  }
 });
 
 router.get('/:id', (req, res) => {
